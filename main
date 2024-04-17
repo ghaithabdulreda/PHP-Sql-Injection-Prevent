@@ -1,0 +1,119 @@
+<?php
+$host = '127.0.0.1';
+$dbuser = 'dbuser';
+$dbpasswd = 'dbpasswd';
+$db = 'dbname';
+$con = mysqli_connect($host, $dbuser, $dbpasswd, $db);
+if (mysqli_connect_errno()) {
+    die("ERROR To connect to db");
+}
+
+class SQL
+{
+    public $con;
+    
+    function __construct($con)
+    {
+        $this->con = $con;
+    }
+
+    function insert($cols, $tb){
+    	$_cols = implode(', ', array_keys($cols));
+    	$values = rtrim(str_repeat(" ?,", count($cols)),',');
+    	
+    	$query = "INSERT INTO $tb ($_cols) VALUES ($values)";
+    	$stmt = $this->con->prepare($query);
+
+
+
+        if ($stmt) {
+            if (!empty($cols)) {
+                $this->bindParams($stmt, $cols);
+            }
+
+            $stmt->execute();
+            if ($this->con->affected_rows > 0) {
+            	echo json_encode(array("status"=>true));
+            	
+
+            }else{
+            	echo json_encode(array("status"=>false));
+            }
+        }
+    }
+
+    function select($cols, $tb, $cond = ["1", "1"])
+    {
+        $_cols = implode(', ', $cols);
+        $conditions = $this->getConditions($cond);
+
+        $query = "SELECT $_cols FROM $tb WHERE $conditions";
+
+        $stmt = $this->con->prepare($query);
+
+        if ($stmt) {
+            if (!empty($cond)) {
+                $this->bindParams($stmt, $cond);
+            }
+
+            $stmt->execute();
+
+            $result = $stmt->get_result();
+            if ($this->con->affected_rows > 0) {
+            	echo json_encode($result->fetch_assoc());
+            	
+
+            }else{
+            	echo json_encode(array("status"=>false));
+            }
+            
+            
+            
+
+            $stmt->close();
+        } else {
+            echo "ERROR " . $this->con->error;
+        }
+    }
+
+
+
+
+    function getConditions($array)
+    {
+    	$conditions = implode('= ? AND ', array_keys($array)). ' = ?';
+    	
+        return $conditions;
+    }
+
+	function bindParams($stmt, $params)
+	{
+		$types = "";
+	    $values = array_values(array_filter($params));
+
+	    foreach ($params as $param) {
+
+	        if (is_int($param)) {
+	            $types .= "i";
+	        } elseif (is_float($param)) {
+	            $types .= "d";
+	        } elseif (is_string($param)) {
+	            $types .= "s";
+	        } else {
+	            $types .= "b";
+	        }
+	    }
+
+	    $stmt->bind_param($types, ...$values);
+	}
+}
+
+$s = new SQL($con);
+
+########################################################################
+
+$s->insert(array('passwd' => 'XQ"W', 'id'=> 1, 'name' => 'Ghaith'), "test");
+
+$s->select(["id", "name"], "test", array('id'=> 1, 'name' => 'GhOSt', 'passwd' => 'gh'));
+
+?>
