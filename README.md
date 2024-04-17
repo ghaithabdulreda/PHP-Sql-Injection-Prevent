@@ -2,7 +2,10 @@ This script provides a simple and effective interface for interacting with the M
 
 
 #use 
-
-  $s->insert(array('passwd' => 'Passwd123', 'id'=> 1, 'name' => 'Ghaith'), "test");
+  # INSERT
+  $s->insert(array('passwd' => 'XQ"W', 'id'=> 1, 'name' => 'Ghaith'), "test");
   
-  $s->select(["id", "name"], "test", array('id'=> 1, 'name' => 'Ghaith', 'passwd' => 'Password123@$'));
+  # Select With Conditions
+  $s->select(["id", "name"], "test", array('id'=> 1, 'name' => 'Ghaith', 'passwd' => 'gh'));
+  # Select WithOut Conditions
+  $s->select(["id", "name"], "test");
