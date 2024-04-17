@@ -114,6 +114,6 @@ $s = new SQL($con);
 
 $s->insert(array('passwd' => 'XQ"W', 'id'=> 1, 'name' => 'Ghaith'), "test");
 
-$s->select(["id", "name"], "test", array('id'=> 1, 'name' => 'GhOSt', 'passwd' => 'gh'));
+$s->select(["id", "name"], "test", array('id'=> 1, 'name' => 'Ghaith', 'passwd' => 'gh'));
 
 ?>
