@@ -42,7 +42,7 @@ class SQL
         }
     }
 
-    function select($cols, $tb, $cond = ["1", "1"])
+    function select($cols, $tb, $cond = array("1"=>"1"))
     {
         $_cols = implode(', ', $cols);
         $conditions = $this->getConditions($cond);
@@ -111,9 +111,12 @@ class SQL
 $s = new SQL($con);
 
 ########################################################################
-
+# INSERT
 $s->insert(array('passwd' => 'XQ"W', 'id'=> 1, 'name' => 'Ghaith'), "test");
 
-$s->select(["id", "name"], "test", array('id'=> 1, 'name' => 'Ghaith', 'passwd' => 'gh'));
+# Select With Conditions
+$s->select(["id", "name"], "test", array('id'=> 1, 'name' => 'GhOSt', 'passwd' => 'gh'));
+# Select WithOut Conditions
+$s->select(["id", "name"], "test");
 
 ?>
